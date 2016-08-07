@@ -1,22 +1,35 @@
 # Pull base image.
-FROM ubuntu:16.04
+FROM ubuntu:14.04
 
 MAINTAINER "Koji Shiraishi <shiraco@gmail.com>"
 
 # Install Python.
 RUN apt-get -y update && apt-get -y upgrade
-RUN apt-get install -y libhdf5-dev python3-pip
+RUN apt-get install -y curl wget git build-essential openssl libssl-dev zlib1g-dev bzip2
+RUN apt-get install -y tree grep sqlite3 libsqlite3-dev libreadline6-dev libbz2-dev libssl-dev
 
-# Enable as python or pip command
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-RUN update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+# Install python.
+ENV PYTHON_VERSION 3.5.2
+RUN git clone https://github.com/yyuu/pyenv.git ~/.pyenv
+RUN echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bash_profile
+RUN echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bash_profile
+RUN echo 'eval "$(pyenv init -)"' >> ~/.bash_profile
+RUN ~/.pyenv/bin/pyenv install $PYTHON_VERSION
+RUN ~/.pyenv/bin/pyenv rehash
+RUN ~/.pyenv/bin/pyenv global $PYTHON_VERSION
 
-# Create user.
-RUN useradd -ms /bin/bash ubuntu
+# Update pip to latest version.
+RUN ~/.pyenv/shims/pip install --upgrade pip
 
-# Define working directory.
-USER ubuntu
-WORKDIR /home/ubuntu
+# Install virtualenv.
+RUN ~/.pyenv/shims/pip install virtualenv
+
+# Install jupyter.
+RUN apt-get install -y pkg-config freetype* libfreetype6-dev libpng-dev dialog
+RUN ~/.pyenv/shims/pip install jupyter
+
+# Install dev tool.
+RUN apt-get install -y vim
 
 # Define default command.
 CMD ["bash"]
