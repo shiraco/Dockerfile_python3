@@ -27,9 +27,18 @@ RUN ~/.pyenv/shims/pip install virtualenv
 # Install jupyter.
 RUN apt-get install -y pkg-config freetype* libfreetype6-dev libpng-dev dialog
 RUN ~/.pyenv/shims/pip install jupyter
+RUN ~/.pyenv/shims/jupyter notebook --generate-config && \
+    ~/.pyenv/shims/ipython profile create
+RUN echo "c.NotebookApp.ip = '*'" >> /root/.jupyter/jupyter_notebook_config.py && \
+    echo "c.NotebookApp.open_browser = False" >> /root/.jupyter/jupyter_notebook_config.py && \
+    echo "c.InteractiveShellApp.matplotlib = 'inline'" >> /root/.ipython/profile_default/ipython_config.py
+RUN mkdir -p /root/notebook
+WORKDIR /root/notebook
 
 # Install dev tool.
 RUN apt-get install -y vim
+
+EXPOSE 8888
 
 # Define default command.
 CMD ["bash"]
