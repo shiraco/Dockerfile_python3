@@ -6,7 +6,7 @@ MAINTAINER "Koji Shiraishi <shiraco@gmail.com>"
 # Install Python.
 RUN apt-get -y update && apt-get -y upgrade
 RUN apt-get install -y curl wget git build-essential openssl libssl-dev zlib1g-dev bzip2
-RUN apt-get install -y tree grep sqlite3 libsqlite3-dev libreadline6-dev libbz2-dev libssl-dev
+RUN apt-get install -y tree grep sqlite3 libsqlite3-dev libreadline6-dev libbz2-dev
 
 # Install python.
 ENV PYTHON_VERSION 3.5.2
